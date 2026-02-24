@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+// @ts-expect-error: ts(2882)
 import "./globals.css";
 import { SITE_CONFIG } from "@/config/site";
 
