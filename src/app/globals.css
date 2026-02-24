@@ -1,0 +1,229 @@
+@import "tailwindcss";
+
+/* ── Variables de diseño ── */
+:root {
+	--gold: #c9a84c;
+	--gold-light: #e8c97a;
+	--gold-dark: #9a7832;
+	--dark-900: #0a0a0a;
+	--dark-800: #111111;
+	--dark-700: #1a1a1a;
+	--dark-600: #222222;
+	--dark-500: #2e2e2e;
+	--cream: #f5f0e8;
+	--text-muted: #9a9a9a;
+	--radius: 0.5rem;
+}
+
+/* ── Reset & Base ── */
+*,
+*::before,
+*::after {
+	box-sizing: border-box;
+}
+
+html {
+	scroll-behavior: smooth;
+	overflow-x: hidden;
+}
+
+body {
+	background-color: var(--dark-900);
+	color: var(--cream);
+	font-family: "Inter", "Helvetica Neue", sans-serif;
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+	overflow-x: hidden;
+	width: 100%;
+}
+
+/* ── Tipografía ── */
+.font-display {
+	font-family: "Playfair Display", "Georgia", serif;
+}
+
+/* ── Gradientes reutilizables ── */
+.gradient-gold {
+	background: linear-gradient(
+		135deg,
+		var(--gold-dark),
+		var(--gold),
+		var(--gold-light)
+	);
+}
+
+.gradient-text {
+	background: linear-gradient(135deg, var(--gold-light), var(--gold));
+	-webkit-background-clip: text;
+	-webkit-text-fill-color: transparent;
+	background-clip: text;
+}
+
+/* ── Botones ── */
+.btn-primary {
+	display: inline-flex;
+	align-items: center;
+	gap: 0.5rem;
+	padding: 0.875rem 2rem;
+	background: linear-gradient(135deg, var(--gold-dark), var(--gold));
+	color: var(--dark-900);
+	font-weight: 600;
+	font-size: 1rem;
+	border-radius: var(--radius);
+	text-decoration: none;
+	border: none;
+	cursor: pointer;
+	transition: all 0.3s ease;
+	box-shadow: 0 4px 20px rgba(201, 168, 76, 0.3);
+	letter-spacing: 0.02em;
+}
+
+.btn-primary:hover {
+	transform: translateY(-2px);
+	box-shadow: 0 8px 30px rgba(201, 168, 76, 0.5);
+	background: linear-gradient(135deg, var(--gold), var(--gold-light));
+}
+
+.btn-secondary {
+	display: inline-flex;
+	align-items: center;
+	gap: 0.5rem;
+	padding: 0.75rem 1.75rem;
+	background: transparent;
+	color: var(--gold);
+	font-weight: 500;
+	font-size: 0.95rem;
+	border-radius: var(--radius);
+	text-decoration: none;
+	border: 1.5px solid var(--gold);
+	cursor: pointer;
+	transition: all 0.3s ease;
+	letter-spacing: 0.02em;
+}
+
+.btn-secondary:hover {
+	background: var(--gold);
+	color: var(--dark-900);
+	transform: translateY(-2px);
+	box-shadow: 0 6px 20px rgba(201, 168, 76, 0.3);
+}
+
+/* ── Tarjetas ── */
+.card-dark {
+	background: var(--dark-700);
+	border: 1px solid var(--dark-500);
+	border-radius: 0.75rem;
+	transition: all 0.3s ease;
+}
+
+.card-dark:hover {
+	border-color: var(--gold-dark);
+	box-shadow: 0 8px 30px rgba(0, 0, 0, 0.4);
+	transform: translateY(-4px);
+}
+
+/* ── Separador dorado ── */
+.gold-divider {
+	width: 60px;
+	height: 3px;
+	background: linear-gradient(90deg, var(--gold-dark), var(--gold));
+	border-radius: 2px;
+	margin: 0 auto;
+}
+
+/* ── Sección header ── */
+.section-label {
+	display: block;
+	font-size: 0.75rem;
+	font-weight: 600;
+	letter-spacing: 0.3em;
+	text-transform: uppercase;
+	color: var(--gold);
+}
+
+/* ── Animaciones ── */
+@keyframes fadeInUp {
+	from {
+		opacity: 0;
+		transform: translateY(30px);
+	}
+	to {
+		opacity: 1;
+		transform: translateY(0);
+	}
+}
+
+@keyframes pulse-gold {
+	0%,
+	100% {
+		box-shadow: 0 0 0 0 rgba(201, 168, 76, 0.4);
+	}
+	50% {
+		box-shadow: 0 0 0 12px rgba(201, 168, 76, 0);
+	}
+}
+
+@keyframes pulse-whatsapp {
+	0%,
+	100% {
+		box-shadow:
+			0 4px 20px rgba(37, 211, 102, 0.5),
+			0 0 0 0 rgba(37, 211, 102, 0.4);
+	}
+	50% {
+		box-shadow:
+			0 4px 20px rgba(37, 211, 102, 0.5),
+			0 0 0 10px rgba(37, 211, 102, 0);
+	}
+}
+
+.animate-fade-up {
+	animation: fadeInUp 0.7s ease forwards;
+}
+
+/* ── WhatsApp sticky ── */
+.whatsapp-sticky {
+	position: fixed;
+	bottom: 1.5rem;
+	right: 1.5rem;
+	z-index: 999;
+	background: #25d366;
+	border-radius: 50%;
+	width: 3.5rem;
+	height: 3.5rem;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	transition: all 0.3s ease;
+	animation: pulse-whatsapp 2.5s infinite;
+}
+
+.whatsapp-sticky:hover {
+	transform: scale(1.1);
+	box-shadow: 0 8px 30px rgba(37, 211, 102, 0.7);
+}
+
+/* ── Scrollbar ── */
+::-webkit-scrollbar {
+	width: 6px;
+}
+::-webkit-scrollbar-track {
+	background: var(--dark-800);
+}
+::-webkit-scrollbar-thumb {
+	background: var(--gold-dark);
+	border-radius: 3px;
+}
+
+/* ── Navbar ── */
+.navbar-glass {
+	background: rgba(10, 10, 10, 0.85);
+	backdrop-filter: blur(12px);
+	-webkit-backdrop-filter: blur(12px);
+	border-bottom: 1px solid rgba(201, 168, 76, 0.15);
+}
+
+/* ── Stars ── */
+.star-filled {
+	color: var(--gold);
+}
