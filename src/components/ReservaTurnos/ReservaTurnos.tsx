@@ -41,6 +41,14 @@ export default function ReservaTurnos() {
 		telefono: "",
 		email: "",
 	});
+	// error de email (solo si el usuario escribió algo inválido)
+	const [emailError, setEmailError] = useState<string | null>(null);
+
+	// helper de validación simple
+	const isValidEmail = (email: string) => {
+		// simple regex para comprobar el formato básico
+		return /^\S+@\S+\.\S+$/.test(email);
+	};
 
 	// Estado para los turnos ocupados
 	const [occupiedSlots, setOccupiedSlots] = useState<string[]>([]);
@@ -69,7 +77,7 @@ export default function ReservaTurnos() {
 	// Generar próximos 14 días
 	const availableDates = useMemo(() => {
 		const dates = [];
-		let current = startOfDay(new Date());
+		const current = startOfDay(new Date());
 		for (let i = 0; i < 20; i++) {
 			const date = addDays(current, i + 1);
 			if (!isSunday(date)) dates.push(date);
@@ -87,6 +95,7 @@ export default function ReservaTurnos() {
 	};
 
 	const handleFinalBooking = async () => {
+		// validación de datos obligatorios
 		if (
 			!selectedDate ||
 			!selectedTime ||
@@ -290,12 +299,20 @@ export default function ReservaTurnos() {
 											placeholder='WhatsApp (Ej: 1122334455)'
 											className='w-full bg-[#1a1a1a] border border-[#2e2e2e] rounded-xl py-3 pl-10 pr-4 text-white focus:border-yellow-500 outline-none transition-all'
 											value={formData.telefono}
-											onChange={(e) =>
+											inputMode='numeric'
+											pattern='[0-9]*'
+											maxLength={10}
+											onChange={(e) => {
+												const onlyNumbers =
+													e.target.value.replace(
+														/\D/g,
+														'',
+													);
 												setFormData({
 													...formData,
-													telefono: e.target.value,
-												})
-											}
+													telefono: onlyNumbers,
+												});
+											}}
 										/>
 									</div>
 									<div className='relative'>
@@ -308,13 +325,29 @@ export default function ReservaTurnos() {
 											placeholder='Email (Opcional)'
 											className='w-full bg-[#1a1a1a] border border-[#2e2e2e] rounded-xl py-3 pl-10 pr-4 text-white focus:border-yellow-500 outline-none transition-all'
 											value={formData.email}
-											onChange={(e) =>
+											onChange={(e) => {
+												const value = e.target.value;
 												setFormData({
 													...formData,
-													email: e.target.value,
-												})
-											}
+													email: value,
+												});
+												if (
+													value &&
+													!isValidEmail(value)
+												) {
+													setEmailError(
+														'Formato de correo inválido',
+													);
+												} else {
+													setEmailError(null);
+												}
+											}}
 										/>
+										{emailError && (
+											<p className='text-red-500 text-sm mt-1'>
+												{emailError}
+											</p>
+										)}
 									</div>
 								</div>
 								<div className='mt-8 flex gap-3'>
@@ -327,7 +360,8 @@ export default function ReservaTurnos() {
 										disabled={
 											!formData.nombre ||
 											!formData.telefono ||
-											isBooking
+											isBooking ||
+											emailError !== null
 										}
 										onClick={handleFinalBooking}
 										className='btn-primary flex-[2] py-3'>

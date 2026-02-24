@@ -64,6 +64,7 @@ export async function GET(request: Request) {
 			.filter(Boolean);
 
 		return NextResponse.json({ busySlots });
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	} catch (error: any) {
 		console.error("Error en Google Calendar GET:", error.message);
 		return NextResponse.json({ error: error.message }, { status: 500 });
@@ -112,6 +113,7 @@ export async function POST(request: Request) {
 		});
 
 		return NextResponse.json({ success: true, eventId: response.data.id });
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	} catch (error: any) {
 		console.error("Error en Google Calendar POST:", error.message);
 		return NextResponse.json({ error: error.message }, { status: 500 });
