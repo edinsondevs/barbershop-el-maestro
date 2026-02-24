@@ -4,12 +4,12 @@ import { SITE_CONFIG } from "@/config/site";
 
 export const metadata: Metadata = {
 	title: SITE_CONFIG.seoTitulo,
-	description: SITE_CONFIG.seoDescripcion,
+	description: SITE_CONFIG.seoDescription,
 	keywords: SITE_CONFIG.seoKeywords,
 	authors: [{ name: SITE_CONFIG.nombre }],
 	openGraph: {
 		title: SITE_CONFIG.seoTitulo,
-		description: SITE_CONFIG.seoDescripcion,
+		description: SITE_CONFIG.seoDescription,
 		type: "website",
 		locale: "es_AR",
 		url: SITE_CONFIG.seoUrl,
@@ -18,7 +18,7 @@ export const metadata: Metadata = {
 	twitter: {
 		card: "summary_large_image",
 		title: SITE_CONFIG.seoTitulo,
-		description: SITE_CONFIG.seoDescripcion,
+		description: SITE_CONFIG.seoDescription,
 	},
 	robots: {
 		index: true,
