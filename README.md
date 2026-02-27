@@ -17,7 +17,7 @@ Este proyecto contiene dos versiones de la landing page para una barbería profe
 
 - **Concepto:** Landing page con **Sistema de Reserva de Turnos Online**.
 - **Acción principal:** Selección interactiva de día y horario.
-- **Accesible en:** `/` (Home)
+- **Accesible en:** `/` (Home) y `/v2`
 - **Novedades:** Incluye el nuevo componente `ReservaTurnos.tsx` que permite al usuario elegir una fecha y hora disponible antes de contactar por WhatsApp.
 
 ---
@@ -53,6 +53,7 @@ barberiaapp/
 ├── src/
 │   ├── app/
 │   │   ├── v1/                # Ruta para la versión 1 (Landing simple)
+│   │   ├── v2/                # Ruta para la versión 2 (Landing con Reserva de Turnos)
 │   │   ├── page.tsx           # v2 (Landing con Reserva de Turnos)
 │   │   └── globals.css        # Estilos y variables de diseño
 │   │
