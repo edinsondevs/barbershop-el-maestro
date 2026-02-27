@@ -1,5 +1,6 @@
 import { google } from "googleapis";
 import { NextResponse } from "next/server";
+import { SITE_CONFIG } from "@/config/site";
 
 // IMPORTANTE: Estas variables deben estar en tu archivo .env.local
 // GOOGLE_CLIENT_EMAIL=tu-servicio-tecnico@...
@@ -30,6 +31,7 @@ function getGoogleAuth() {
 export async function GET(request: Request) {
 	const { searchParams } = new URL(request.url);
 	const dateStr = searchParams.get("date"); // Formato YYYY-MM-DD
+	const barberoId = searchParams.get("barber");
 
 	if (!dateStr) {
 		return NextResponse.json(
@@ -40,7 +42,12 @@ export async function GET(request: Request) {
 
 	try {
 		const auth = getGoogleAuth();
-		const calendarId = process.env.GOOGLE_CALENDAR_ID;
+
+		// Buscar el calendario del barbero
+		const barberoObj = SITE_CONFIG.barberos.find((b) => b.id === barberoId);
+		const calendarId =
+			barberoObj?.calendarId || process.env.GOOGLE_CALENDAR_ID;
+
 		const calendar = google.calendar({ version: "v3", auth });
 
 		const timeMin = new Date(`${dateStr}T00:00:00Z`).toISOString();
@@ -64,7 +71,7 @@ export async function GET(request: Request) {
 			.filter(Boolean);
 
 		return NextResponse.json({ busySlots });
-	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+		// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	} catch (error: any) {
 		console.error("Error en Google Calendar GET:", error.message);
 		return NextResponse.json({ error: error.message }, { status: 500 });
@@ -75,9 +82,9 @@ export async function GET(request: Request) {
 export async function POST(request: Request) {
 	try {
 		const body = await request.json();
-		const { nombre, email, telefono, fecha, hora } = body;
+		const { nombre, email, telefono, fecha, hora, barbero } = body;
 
-		if (!nombre || !telefono || !fecha || !hora) {
+		if (!nombre || !telefono || !fecha || !hora || !barbero) {
 			return NextResponse.json(
 				{ error: "Faltan datos obligatorios" },
 				{ status: 400 },
@@ -85,7 +92,12 @@ export async function POST(request: Request) {
 		}
 
 		const auth = getGoogleAuth();
-		const calendarId = process.env.GOOGLE_CALENDAR_ID;
+
+		// Buscar el calendario del barbero
+		const barberoObj = SITE_CONFIG.barberos.find((b) => b.id === barbero);
+		const calendarId =
+			barberoObj?.calendarId || process.env.GOOGLE_CALENDAR_ID;
+
 		const calendar = google.calendar({ version: "v3", auth });
 
 		// Combinar fecha y hora para crear el objeto Date
@@ -93,10 +105,12 @@ export async function POST(request: Request) {
 		const startDateTime = new Date(`${fecha}T${hora}:00-03:00`);
 		const endDateTime = new Date(startDateTime.getTime() + 30 * 60000); // 30 minutos de duración
 
+		const barberoNombre = barberoObj ? barberoObj.nombre : barbero;
+
 		const event = {
-			summary: `Corte: ${nombre}`,
+			summary: `Corte (${barberoNombre}): ${nombre}`,
 			location: SITE_CONFIG.direccion || "Barbería",
-			description: `Cliente: ${nombre}\nWhatsApp: ${telefono}\nEmail: ${email || "No proporcionado"}`,
+			description: `Barbero: ${barberoNombre}\nCliente: ${nombre}\nWhatsApp: ${telefono}\nEmail: ${email || "No proporcionado"}`,
 			start: {
 				dateTime: startDateTime.toISOString(),
 				timeZone: "America/Argentina/Buenos_Aires",
@@ -113,13 +127,9 @@ export async function POST(request: Request) {
 		});
 
 		return NextResponse.json({ success: true, eventId: response.data.id });
-	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+		// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	} catch (error: any) {
 		console.error("Error en Google Calendar POST:", error.message);
 		return NextResponse.json({ error: error.message }, { status: 500 });
 	}
 }
-
-const SITE_CONFIG = {
-	direccion: "Av. Corrientes 1234, CABA, Buenos Aires, Argentina",
-};

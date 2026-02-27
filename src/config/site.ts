@@ -4,6 +4,7 @@
 // ============================================================
 
 export const SITE_CONFIG = {
+	version: "2.0.0",
 	// --- Información del negocio ---
 	nombre: "Barbería El Maestro",
 	slogan: "Tu estilo, nuestra pasión, ¡dale!",
@@ -33,8 +34,8 @@ export const SITE_CONFIG = {
 	],
 
 	// --- Redes sociales ---
-	instagram: "https://instagram.com/barberiaelmaestro", 
-	facebook: "https://facebook.com/barberiaelmaestro", 
+	instagram: "https://instagram.com/barberiaelmaestro",
+	facebook: "https://facebook.com/barberiaelmaestro",
 
 	// --- SEO ---
 	seoTitulo:
@@ -43,7 +44,7 @@ export const SITE_CONFIG = {
 		"Barbería profesional en Buenos Aires, Argentina. Cortes de cabello modernos y clásicos, arreglo de barba y afeitado tradicional. Atención personalizada con los mejores barberos.",
 	seoKeywords:
 		"barbería buenos aires, corte de pelo hombre buenos aires, barbero profesional, afeitado clásico, corte de barba CABA",
-	seoUrl: "https://barberiaelmaestro.com.ar", 
+	seoUrl: "https://barberiaelmaestro.com.ar",
 
 	// --- Reseñas de Google Maps (Manual) ---
 	// Podés copiar las mejores reseñas de tu perfil de Google My Business
@@ -83,6 +84,35 @@ export const SITE_CONFIG = {
 				"Súper prolijos los pibes, unos profesionales de verdad. Ya tengo mi turno para el mes que viene, ni ahí me lo pierdo.",
 			inicial: "A",
 			rating: 5,
+		},
+	],
+	// --- Barberos ---
+	barberos: [
+		{
+			id: "Edinson",
+			nombre: "Edinson",
+			foto: "/images/Barbero_3.jpg",
+			calendarId: "", // Opcional: ID específico si cada uno tiene su propio calendario
+		},
+		{
+			id: "Juan",
+			nombre: "Juan",
+			foto: "/images/Barbero_1.jpg",
+			calendarId:
+				"3715d0aaeb0e4b8247097f282e2b4ec672f86a9f33f446ff69c82b8c3494b251@group.calendar.google.com",
+		},
+		{
+			id: "Marcos",
+			nombre: "Marcos",
+			foto: "/images/Barbero_2.jpg",
+			calendarId:
+				"1143ef765cd0060a1c37e705b08bf4fcd804e31ba2f29fd68d79f98fd61dd17d@group.calendar.google.com",
+		},
+		{
+			id: "cualquiera",
+			nombre: "Cualquiera",
+			foto: "/images/Peluquera_1.jpg",
+			calendarId: process.env.GOOGLE_CALENDAR_ID, // Usa el calendario principal por defecto
 		},
 	],
 } as const;

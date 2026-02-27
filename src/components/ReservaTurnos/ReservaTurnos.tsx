@@ -12,7 +12,9 @@ import {
 	Phone,
 	Mail,
 	Loader2,
+	Scissors,
 } from "lucide-react";
+import Image from "next/image";
 import { SITE_CONFIG } from "@/config/site";
 
 // Generar horarios de 30 minutos
@@ -32,8 +34,9 @@ export default function ReservaTurnos() {
 	const [selectedDate, setSelectedDate] = useState<Date>(
 		addDays(startOfDay(new Date()), 1),
 	);
+	const [selectedBarber, setSelectedBarber] = useState<string | null>(null);
 	const [selectedTime, setSelectedTime] = useState<string | null>(null);
-	const [step, setStep] = useState(1); // 1: Fecha, 2: Hora, 3: Datos, 4: Confirmación
+	const [step, setStep] = useState(1); // 1: Barbero, 2: Fecha, 3: Hora, 4: Datos, 5: Confirmación
 
 	// Formulario de cliente
 	const [formData, setFormData] = useState({
@@ -61,7 +64,9 @@ export default function ReservaTurnos() {
 			setIsLoading(true);
 			try {
 				const dateKey = format(selectedDate, "yyyy-MM-dd");
-				const res = await fetch(`/api/availability?date=${dateKey}`);
+				const res = await fetch(
+					`/api/availability?date=${dateKey}&barber=${selectedBarber}`,
+				);
 				const data = await res.json();
 				setOccupiedSlots(data.busySlots || []);
 			} catch (error) {
@@ -71,7 +76,7 @@ export default function ReservaTurnos() {
 			}
 		}
 
-		if (step === 2) fetchAvailability();
+		if (step === 3) fetchAvailability();
 	}, [selectedDate, step]);
 
 	// Generar próximos 14 días
@@ -91,12 +96,13 @@ export default function ReservaTurnos() {
 	const handleDateSelect = (date: Date) => {
 		setSelectedDate(date);
 		setSelectedTime(null);
-		setStep(2);
+		setStep(3);
 	};
 
 	const handleFinalBooking = async () => {
 		// validación de datos obligatorios
 		if (
+			!selectedBarber ||
 			!selectedDate ||
 			!selectedTime ||
 			!formData.nombre ||
@@ -116,6 +122,7 @@ export default function ReservaTurnos() {
 					...formData,
 					fecha: fechaKey,
 					hora: selectedTime,
+					barbero: selectedBarber,
 				}),
 			});
 
@@ -126,10 +133,10 @@ export default function ReservaTurnos() {
 					"eeee d 'de' MMMM",
 					{ locale: es },
 				);
-				const mensaje = `Hola!%20Acabo%20de%20reservar%20un%20un%20turno%20online.%0A%0A*Detalles:*%0A👤%20*Nombre:*%20${formData.nombre}%0A📅%20*Fecha:*%20${fechaFormateada}%0A⏰%20*Hora:*%20${selectedTime}hs%0A📞%20*Tel:*%20${formData.telefono}%0A✉️%20*Email:*%20${formData.email || "N/A"}`;
+				const mensaje = `Hola!%20Acabo%20de%20reservar%20un%20un%20turno%20online.%0A%0A*Detalles:*%0A👤%20*Nombre:*%20${formData.nombre}%0A💈%20*Barbero:*%20${SITE_CONFIG.barberos.find((b) => b.id === selectedBarber)?.nombre}%0A📅%20*Fecha:*%20${fechaFormateada}%0A⏰%20*Hora:*%20${selectedTime}hs%0A📞%20*Tel:*%20${formData.telefono}%0A✉️%20*Email:*%20${formData.email || "N/A"}`;
 				const url = `https://wa.me/${SITE_CONFIG.whatsappNumero}?text=${mensaje}`;
 				window.open(url, "_blank");
-				setStep(4);
+				setStep(5);
 			} else {
 				alert(
 					"Hubo un error al reservar el turno. Por favor contactanos directamente por WhatsApp.",
@@ -167,7 +174,7 @@ export default function ReservaTurnos() {
 				<div className='card-dark overflow-hidden bg-[#111111] border-[#2e2e2e]'>
 					{/* Progress Header */}
 					<div className='flex border-b border-[#2e2e2e]'>
-						{[1, 2, 3, 4].map((n) => (
+						{[1, 2, 3, 4, 5].map((n) => (
 							<div
 								key={n}
 								className={`flex-1 py-4 text-center text-[10px] font-bold uppercase transition-all border-b-2 ${step === n ? "text-yellow-500 border-yellow-500 bg-white/5" : "text-gray-600 border-transparent"}`}>
@@ -177,8 +184,69 @@ export default function ReservaTurnos() {
 					</div>
 
 					<div className='p-6 sm:p-10'>
-						{/* STEP 1: Fecha */}
+						{/* STEP 1: Barberó */}
 						{step === 1 && (
+							<div className='animate-fade-up'>
+								<h3 className='text-white font-semibold mb-6 flex items-center gap-2'>
+									<Scissors
+										size={20}
+										className='text-yellow-500'
+									/>{" "}
+									Seleccioná tu barbero
+								</h3>
+								<div className='grid grid-cols-1 sm:grid-cols-2 gap-4'>
+									{SITE_CONFIG.barberos.map((barber) => (
+										<button
+											key={barber.id}
+											onClick={() => {
+												setSelectedBarber(barber.id);
+												setStep(2);
+											}}
+											className={`p-6 rounded-xl border flex items-center justify-between transition-all ${selectedBarber === barber.id ? "border-yellow-500 bg-yellow-500/10 text-yellow-400" : "border-[#2e2e2e] bg-[#1a1a1a] hover:border-yellow-600/50 text-gray-400"}`}>
+											<div className='flex items-center gap-4 text-left'>
+												<div
+													className={`w-16 h-16 rounded-full relative flex items-center justify-center font-bold text-xl overflow-hidden ${selectedBarber === barber.id ? "bg-yellow-500 text-black border-2 border-yellow-400" : "bg-[#2e2e2e] text-gray-400 border border-[#3e3e3e]"}`}>
+													{barber.foto ? (
+														<Image
+															src={barber.foto}
+															alt={barber.nombre}
+															fill
+															className='object-cover'
+														/>
+													) : (
+														(
+															barber as {
+																nombre: string;
+															}
+														).nombre[0]
+													)}
+												</div>
+												<div>
+													<span className='font-display text-lg font-semibold block'>
+														{barber.nombre}
+													</span>
+													<span className='text-xs text-gray-500 uppercase tracking-wider'>
+														{barber.id ===
+														"cualquiera"
+															? "Cualquier experto"
+															: "Barbero Profesional"}
+													</span>
+												</div>
+											</div>
+											{selectedBarber === barber.id && (
+												<CheckCircle2
+													size={24}
+													className='text-yellow-500'
+												/>
+											)}
+										</button>
+									))}
+								</div>
+							</div>
+						)}
+
+						{/* STEP 2: Fecha */}
+						{step === 2 && (
 							<div className='animate-fade-up'>
 								<h3 className='text-white font-semibold mb-6 flex items-center gap-2'>
 									<Calendar
@@ -206,11 +274,18 @@ export default function ReservaTurnos() {
 										</button>
 									))}
 								</div>
+								<div className='mt-8'>
+									<button
+										onClick={() => setStep(1)}
+										className='btn-secondary py-2 px-4 shadow-none border-gray-700 text-gray-400'>
+										Volver
+									</button>
+								</div>
 							</div>
 						)}
 
-						{/* STEP 2: Hora */}
-						{step === 2 && (
+						{/* STEP 3: Hora */}
+						{step === 3 && (
 							<div className='animate-fade-up'>
 								<h3 className='text-white font-semibold mb-6 flex items-center gap-2'>
 									<Clock
@@ -250,13 +325,13 @@ export default function ReservaTurnos() {
 								)}
 								<div className='mt-8 flex justify-between'>
 									<button
-										onClick={() => setStep(1)}
+										onClick={() => setStep(2)}
 										className='btn-secondary py-2 px-4 shadow-none border-gray-700 text-gray-400'>
 										Volver
 									</button>
 									<button
 										disabled={!selectedTime}
-										onClick={() => setStep(3)}
+										onClick={() => setStep(4)}
 										className='btn-primary py-3'>
 										Continuar <ArrowRight size={18} />
 									</button>
@@ -264,8 +339,8 @@ export default function ReservaTurnos() {
 							</div>
 						)}
 
-						{/* STEP 3: Datos */}
-						{step === 3 && (
+						{/* STEP 4: Datos */}
+						{step === 4 && (
 							<div className='animate-fade-up max-w-md mx-auto'>
 								<h3 className='text-white font-semibold mb-6 text-center'>
 									Tus datos de contacto
@@ -306,7 +381,7 @@ export default function ReservaTurnos() {
 												const onlyNumbers =
 													e.target.value.replace(
 														/\D/g,
-														'',
+														"",
 													);
 												setFormData({
 													...formData,
@@ -336,7 +411,7 @@ export default function ReservaTurnos() {
 													!isValidEmail(value)
 												) {
 													setEmailError(
-														'Formato de correo inválido',
+														"Formato de correo inválido",
 													);
 												} else {
 													setEmailError(null);
@@ -352,7 +427,7 @@ export default function ReservaTurnos() {
 								</div>
 								<div className='mt-8 flex gap-3'>
 									<button
-										onClick={() => setStep(2)}
+										onClick={() => setStep(3)}
 										className='btn-secondary flex-1 py-3 text-gray-400 border-gray-800'>
 										Atrás
 									</button>
@@ -364,7 +439,7 @@ export default function ReservaTurnos() {
 											emailError !== null
 										}
 										onClick={handleFinalBooking}
-										className='btn-primary flex-[2] py-3'>
+										className='btn-primary flex-2 py-3'>
 										{isBooking ? (
 											<Loader2 className='animate-spin mx-auto' />
 										) : (
@@ -375,8 +450,8 @@ export default function ReservaTurnos() {
 							</div>
 						)}
 
-						{/* STEP 4: ¡Éxito! */}
-						{step === 4 && (
+						{/* STEP 5: ¡Éxito! */}
+						{step === 5 && (
 							<div className='text-center py-6 animate-fade-up'>
 								<div className='w-20 h-20 bg-green-500/10 rounded-full flex items-center justify-center mx-auto mb-6'>
 									<CheckCircle2
@@ -399,6 +474,7 @@ export default function ReservaTurnos() {
 									a las {selectedTime}hs. <br /> Si no se
 									abrió WhatsApp, hacé clic abajo.
 								</p>
+
 								<button
 									onClick={() => setStep(1)}
 									className='btn-secondary py-3 px-8 text-gray-400 border-gray-800'>
