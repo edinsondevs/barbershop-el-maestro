@@ -4,8 +4,12 @@ import Image from "next/image";
 import { SITE_CONFIG } from "@/config/site";
 import { CalendarCheck, ChevronDown } from "lucide-react";
 import Barbero from "@/images/barbero.webp";
+import { usePathname } from "next/navigation";
 
 export default function HeroSection() {
+	const params = usePathname();
+	const textoBtn = params === "/v2" ? "Reservar turno online" : "Escribenos para reservar turno";
+
 	return (
 		<section
 			id='inicio'
@@ -87,11 +91,12 @@ export default function HeroSection() {
 				{/* CTAs */}
 				<div className='flex flex-col sm:flex-row gap-4 justify-center items-center'>
 					<a
-						href='#turnos'
+						href={params === "/v2" ? "#turnos" : "https://wa.me/5493416141044"}
+						target={params === "/v2" ? "_self" : "_blank"}
 						id='hero-cta-turnos'
 						className='btn-primary text-lg px-8 py-4 w-full sm:w-auto justify-center'>
 						<CalendarCheck size={20} />
-						Reservar turno online
+						{textoBtn}
 					</a>
 					<a
 						href='#servicios'

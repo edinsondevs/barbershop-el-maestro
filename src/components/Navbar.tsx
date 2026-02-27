@@ -2,7 +2,8 @@
 
 import { useState, useEffect } from "react";
 import { Menu, X, Scissors, Clock } from "lucide-react";
-import { SITE_CONFIG, WHATSAPP_URL } from "@/config/site";
+import { SITE_CONFIG } from "@/config/site";
+import {  usePathname } from "next/navigation";
 
 const NAV_LINKS = [
 	{ href: "#nosotros", label: "Nosotros" },
@@ -11,11 +12,12 @@ const NAV_LINKS = [
 	{ href: "#testimonios", label: "Opiniones" },
 	{ href: "#ubicacion", label: "Ubicación" },
 ];
-
 export default function Navbar() {
 	const [scrolled, setScrolled] = useState(false);
 	const [mobileOpen, setMobileOpen] = useState(false);
-
+	
+	const params = usePathname();
+	
 	useEffect(() => {
 		const handleScroll = () => setScrolled(window.scrollY > 50);
 		window.addEventListener("scroll", handleScroll, { passive: true });
@@ -59,7 +61,7 @@ export default function Navbar() {
 							<span className='absolute -bottom-1 left-0 w-0 h-0.5 bg-yellow-500 transition-all duration-300 group-hover:w-full' />
 						</a>
 					))}
-					<a
+					{ params !== "/v1" && <a
 						href='#turnos'
 						id='nav-cta-turnos'
 						className='btn-primary text-sm py-2 px-5 group'>
@@ -68,7 +70,7 @@ export default function Navbar() {
 							className='text-black group-hover:rotate-12 transition-transform'
 						/>
 						Reservar turno
-					</a>
+					</a>}
 				</div>
 
 				{/* Hamburger mobile */}
