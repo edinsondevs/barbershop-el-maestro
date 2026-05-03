@@ -43,8 +43,24 @@ Esto mejora la tasa de conversión al ahorrarle tiempo al barbero y al cliente, 
 - **Tailwind CSS 4.x** (Estética premium Dark & Gold)
 - **date-fns** (Manejo de fechas y calendarios)
 - **lucide-react** (Iconografía)
+- **Docker & Docker Compose** (Contenedorización para desarrollo y producción)
 
 ---
+
+## 🐳 Soporte para Docker
+
+El proyecto está completamente dockerizado para facilitar el desarrollo y la implementación.
+
+### 🛠️ Entorno de Desarrollo
+Utilizamos `docker-compose` para montar un entorno de desarrollo con **Hot Reload** habilitado.
+- **Imagen:** `node:24.13.0-slim`
+- **Características:** Sincronización de volúmenes, polling para detección de cambios y dependencias aisladas.
+
+### 📦 Producción
+El `Dockerfile` principal utiliza un **build multi-etapa** (multi-stage build) para optimizar el tamaño de la imagen final.
+1. **Dependencies:** Instala solo lo necesario.
+2. **Builder:** Compila la aplicación Next.js en modo `standalone`.
+3. **Runner:** Imagen ligera que solo contiene los artefactos de producción (`.next/standalone`, `.next/static` y `public`).
 
 ## 📁 Estructura de archivos
 
@@ -71,6 +87,7 @@ barberiaapp/
 
 ## 🚀 Instalación y uso
 
+### Local (Node.js instalado)
 ```bash
 # 1. Instalar dependencias
 npm install
@@ -78,6 +95,18 @@ npm install
 # 2. Correr modo desarrollo
 npm run dev
 ```
+
+### Docker (Recomendado)
+Si tenés Docker instalado, podés levantar el proyecto sin instalar dependencias localmente:
+
+```bash
+# Levantar el entorno de desarrollo
+docker-compose up
+
+# Bajar el entorno
+docker-compose down
+```
+El entorno de Docker está configurado con **Polling** para asegurar que el Hot Reload funcione correctamente en cualquier sistema operativo.
 
 ---
 

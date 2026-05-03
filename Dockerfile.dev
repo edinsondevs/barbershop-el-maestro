@@ -1,0 +1,16 @@
+FROM node:24.13.0-slim
+
+WORKDIR /app
+
+# Instalamos dependencias necesarias para desarrollo
+COPY package.json package-lock.json* ./
+RUN npm install
+
+# Copiamos el resto de los archivos
+COPY . .
+
+# Exponemos el puerto de Next.js
+EXPOSE 3000
+
+# Comando para desarrollo con Hot Reload
+CMD ["npm", "run", "dev"]

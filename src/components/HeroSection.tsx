@@ -58,7 +58,7 @@ export default function HeroSection() {
 				{/* Headline */}
 				<h1 className='font-display text-5xl sm:text-6xl md:text-7xl font-black text-white leading-tight mb-6'>
 					Tu estilo,{" "}
-					<span className='gradient-text'>nuestra pasión</span>
+					<span className='gradient-text'>nuestra verdadera pasión</span>
 				</h1>
 
 				{/* Subheadline */}

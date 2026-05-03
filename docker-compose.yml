@@ -1,0 +1,17 @@
+services:
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    ports:
+      - "3000:3000"
+    volumes:
+      - .:/app:delegated # ":delegated" optimiza la sincronización en Docker Desktop
+      - /app/node_modules
+      - /app/.next
+    environment:
+      - NODE_ENV=development
+      - WATCHPACK_POLLING=true # Para Next.js / Webpack
+      - CHOKIDAR_USEPOLLING=true # Para otras herramientas de monitoreo
+   # Forzamos el uso de webpack para asegurar que el polling funcione 100%
+    command: sh -c "npm install && npx next dev --webpack"
