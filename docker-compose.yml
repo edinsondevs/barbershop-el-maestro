@@ -13,5 +13,7 @@ services:
       - NODE_ENV=development
       - WATCHPACK_POLLING=true # Para Next.js / Webpack
       - CHOKIDAR_USEPOLLING=true # Para otras herramientas de monitoreo
-   # Forzamos el uso de webpack para asegurar que el polling funcione 100%
+      - DOCKER=true # Flag para detectar que estamos en Docker
+    # Forzamos el uso de webpack para asegurar que el polling funcione 100%
     command: sh -c "npm install && npx next dev --webpack"
+    
