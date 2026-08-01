@@ -46,8 +46,8 @@ export const SITE_CONFIG: SiteConfigInterfaces = {
 		'Barbería profesional en Buenos Aires, Argentina. Cortes de cabello modernos y clásicos, arreglo de barba y afeitado tradicional. Atención personalizada con los mejores barberos.',
 	seoKeywords:
 		'barbería buenos aires, corte de pelo hombre buenos aires, barbero profesional, afeitado clásico, corte de barba CABA',
-	seoUrl: 'https://barberiaelmaestro.com.ar',
-	ogImage: '/images/Seo-barberia.png',
+	seoUrl: 'https://barberia-el-maestro.edinsondigital.com.ar',
+	ogImage: '/images/og-barberia.png',
 
 	// --- Reseñas de Google Maps (Manual) ---
 	// Podés copiar las mejores reseñas de tu perfil de Google My Business
