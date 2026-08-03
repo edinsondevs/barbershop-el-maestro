@@ -45,7 +45,7 @@ export function generateMetadata(config: SiteConfigInterfaces): Metadata {
 
 			images: [
 				{
-					url: config.ogImage || '',
+					url: new URL(config.ogImage, config.seoUrl).toString(),
 
 					width: 1200,
 

@@ -55,7 +55,7 @@ export interface SiteConfigInterfaces {
 	barberos: Barbero[];
 	imagenes?: Imagen[];
 	/** Imagen Open Graph (ruta relativa o absoluta) */
-	ogImage?: string;
+	ogImage: string;
 }
 
 interface Imagen {
